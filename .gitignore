@@ -330,3 +330,6 @@ betleague/media/
 .env
 .envs/*
 !.envs/.local/
+
+.envrc
+.idea/
