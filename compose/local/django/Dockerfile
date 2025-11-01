@@ -1,5 +1,6 @@
 # define an alias for the specific python version used in this file.
-FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim AS python
+# FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim AS python
+FROM python:3.13-slim-trixie AS python
 
 # Python build stage
 FROM python AS python-build-stage
@@ -15,10 +16,16 @@ ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=0
 RUN apt-get update && apt-get install --no-install-recommends -y \
   # dependencies for building Python packages
   build-essential \
+  curl \
   # psycopg dependencies
   libpq-dev \
   gettext \
   wait-for-it
+
+# Install uv
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+# Add uv to PATH
+ENV PATH="/root/.local/bin:/root/.cargo/bin:${PATH}"
 
 # Requirements are installed here to ensure they will be cached.
 RUN --mount=type=cache,target=/root/.cache/uv \
